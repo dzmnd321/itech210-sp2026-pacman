@@ -104,7 +104,13 @@ running = True
 while running:
     
     #check for pygame events
-
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            quit_game()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                quit_game()
+            move_player(event)
     
     #check for end of game
     if win or gameover:
@@ -138,6 +144,9 @@ while running:
             ghost_dirs[i] = dirs[0] 
 
     #check ghosts collisions
+    for ghost in ghosts:
+        if ghost[0] == player_x and ghost[1] == player_y:
+            gameover = True
     
 
     #check for pellet
@@ -155,13 +164,29 @@ while running:
     screen.fill(BLACK)
 
     #draw map
+    
     #draw map border
+    for y in range(ROWS):
+        for x in range(COLS):
+            if MAP[y][x] == 1:
+                draw_border(screen, x,y)
+            elif MAP[y][x] == 0:
+                draw_pellet(screen, x,y)
+
     #draw map pellet
+    for y in range(ROWS):
+        for x in range(COLS):
+            if map[y][x] == 1:
+                draw_border(screen, x, y)
+            elif MAP[y][x] == 0:
+                draw_pellet(screen, x, y)
 
     #draw pacman
     pygame.draw.circle(screen, YELLOW, (player_x*TILE_SIZE + TILE_SIZE//2, player_y*TILE_SIZE + TILE_SIZE//2), 12)
 
     #draw ghosts
+    for ghost in ghosts:
+        draw_ghost(screen, ghost[0], ghost[1])
         
     #draw score
     score_font = font.render(f"Score: {score}", True, WHITE)
